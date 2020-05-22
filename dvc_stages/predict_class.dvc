@@ -1,0 +1,18 @@
+cmd: python class_eval.py -m resnet18 resnet34 -o out/class/class_predict.csv
+wdir: ..
+deps:
+- path: class_eval.py
+  md5: 617a2031dbf8e77d88386011ab8c941f
+- path: experiments/exp1/class/resnet18
+  md5: f0aed9e29f82eb55bafe380acdf1630a.dir
+- path: experiments/exp1/class/resnet34
+  md5: 2d2330c926d686330ba8f5bc4de19156.dir
+- path: data/indices/test_class.npy
+  md5: cae25d18da06e45530feda641d7d6a57
+outs:
+- path: out/class/class_predict.csv
+  cache: true
+  metric: false
+  persist: false
+  md5: 9254d55d2c74f45057803f1931541c13
+md5: b7025f3503752ff57aacefb137e9aa11

@@ -1,0 +1,38 @@
+cmd: python prepare_dataset.py
+wdir: ..
+deps:
+- path: prepare_dataset.py
+  md5: ddbc458c3a755a9545caf6de326076b8
+outs:
+- path: data/indices/train_seg.npy
+  cache: true
+  metric: false
+  persist: false
+  md5: 70e6223ed900651097d359e01bcdac01
+- path: data/indices/train_class.npy
+  cache: true
+  metric: false
+  persist: false
+  md5: 2ca9cd87893b3b225ef17a93b9d10a03
+- path: data/indices/val_seg.npy
+  cache: true
+  metric: false
+  persist: false
+  md5: 7749dab71cd6552977f66f73a4d45240
+- path: data/indices/val_class.npy
+  cache: true
+  metric: false
+  persist: false
+  md5: ff0c31fae1935dd562297810289d36d3
+- path: data/indices/test_seg.npy
+  cache: true
+  metric: false
+  persist: false
+  md5: 1463eb902df546fbae72b3268003f8e4
+- path: data/indices/test_class.npy
+  cache: true
+  metric: false
+  persist: false
+  md5: cae25d18da06e45530feda641d7d6a57
+md5: fbd231079089dd8110c4e0462083eba3
+locked: true

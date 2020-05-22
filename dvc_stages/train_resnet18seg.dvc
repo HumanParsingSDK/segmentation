@@ -1,0 +1,16 @@
+cmd: python train_segmentation.py -m resnet18
+wdir: ..
+deps:
+- path: train_segmentation.py
+  md5: dda768afed0a9db535ec12269c90e883
+- path: data/indices/train_seg.npy
+  md5: 70e6223ed900651097d359e01bcdac01
+- path: data/indices/val_seg.npy
+  md5: 7749dab71cd6552977f66f73a4d45240
+outs:
+- path: experiments/exp1/seg/resnet18
+  cache: true
+  metric: false
+  persist: false
+  md5: eb5166e9587fa7518093190eda0181b0.dir
+md5: a61c30180be51ddef2ad0356dcdc5a21

@@ -1,0 +1,16 @@
+cmd: python train_classifier.py -m resnet34
+wdir: ..
+deps:
+- path: train_classifier.py
+  md5: 63fa46360c6e53e87d3ffaa1b649e606
+- path: data/indices/train_class.npy
+  md5: 2ca9cd87893b3b225ef17a93b9d10a03
+- path: data/indices/val_class.npy
+  md5: ff0c31fae1935dd562297810289d36d3
+outs:
+- path: experiments/exp1/class/resnet34
+  cache: true
+  metric: false
+  persist: false
+  md5: b31b5a2447b2c5a917d469e84b9f4327.dir
+md5: 68d4a87ef9a4191b57f68ba79ef80c89
