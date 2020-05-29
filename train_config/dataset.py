@@ -9,7 +9,7 @@ import torch
 from albumentations import Compose, SmallestMaxSize, HorizontalFlip, Resize, Rotate, OneOf, RandomContrast, RandomGamma, \
     RandomBrightness, \
     ElasticTransform, GridDistortion, OpticalDistortion, RandomSizedCrop, RandomCrop, RandomBrightnessContrast, GaussNoise, \
-    BasicTransform
+    BasicTransform, ImageCompression, CLAHE, ShiftScaleRotate, Downscale, ISONoise, Solarize, MotionBlur
 
 from pietoolbelt.datasets.utils import AugmentedDataset, DatasetsContainer, InstanceSegmentationDataset
 from pietoolbelt.datasets.common import BasicDataset
@@ -24,13 +24,23 @@ class SegmentationAugmentations:
         if is_train:
             self._aug = Compose([
                 preprocess,
-                HorizontalFlip(p=0.5),
-                GaussNoise(p=0.3),
                 OneOf([
-                    RandomBrightnessContrast(),
-                    RandomGamma(),
-                ], p=0.3),
-                Rotate(limit=20),
+                    Compose([
+                        HorizontalFlip(p=0.5),
+                        GaussNoise(p=0.5),
+                        OneOf([
+                            RandomBrightnessContrast(),
+                            RandomGamma(),
+                        ], p=0.5),
+                        Rotate(limit=20, border_mode=cv2.BORDER_CONSTANT),
+                        ImageCompression(),
+                        CLAHE(),
+                        Downscale(scale_min=0.2, scale_max=0.9, p=0.5),
+                        ISONoise(p=0.5),
+                        MotionBlur(p=0.5)
+                    ]),
+                    HorizontalFlip(p=0.5)
+                ])
             ], p=1)
         else:
             self._aug = preprocess
@@ -59,7 +69,8 @@ def _create_dataset(is_train: bool, augmented: bool, to_pytorch: bool = True, in
     def vertical2quad(force_apply=False, **kwargs):
         image, mask = kwargs['image'], kwargs['mask']
         max_size, min_size = np.max(image.shape), np.min([image.shape[0], image.shape[1]])
-        image_tmp, mask_tmp = np.ones((max_size, max_size, image.shape[2]), dtype=np.uint8), np.zeros((max_size, max_size), dtype=np.uint8)
+        image_tmp, mask_tmp = np.ones((max_size, max_size, image.shape[2]), dtype=np.uint8), np.zeros((max_size, max_size),
+                                                                                                      dtype=np.uint8)
         pos = (max_size - min_size) // 2
         image_tmp[:, pos: pos + min_size, :] = image
         mask_tmp[:, pos: pos + min_size] = mask
@@ -72,12 +83,14 @@ def _create_dataset(is_train: bool, augmented: bool, to_pytorch: bool = True, in
 
     if augmented:
         datasets = [
-            AugmentedDataset(ClothingCoParsingDataset())
-                .add_aug(SegmentationAugmentations(is_train, to_pytorch, vertical_img_preprocess).augmentate),
-            AugmentedDataset(AISegmentDataset()).add_aug(SegmentationAugmentations(is_train, to_pytorch, regular_preprocess).augmentate),
-            AugmentedDataset(InstanceSegmentationDataset(SuperviselyPersonDataset())).add_aug(SegmentationAugmentations(is_train, to_pytorch, regular_preprocess).augmentate),
-            AugmentedDataset(PicsartDataset()).add_aug(SegmentationAugmentations(is_train, to_pytorch, regular_preprocess).augmentate),
-            AugmentedDataset(CHIP()).add_aug(SegmentationAugmentations(is_train, to_pytorch, regular_preprocess).augmentate),
+            # AugmentedDataset(ClothingCoParsingDataset())
+            #     .add_aug(SegmentationAugmentations(is_train, to_pytorch, vertical_img_preprocess).augmentate),
+            # AugmentedDataset(AISegmentDataset()).add_aug(SegmentationAugmentations(is_train, to_pytorch, regular_preprocess).augmentate),
+            # AugmentedDataset(InstanceSegmentationDataset(SuperviselyPersonDataset())).add_aug(SegmentationAugmentations(is_train, to_pytorch, regular_preprocess).augmentate),
+
+            # AugmentedDataset(PicsartDataset()).add_aug(SegmentationAugmentations(is_train, to_pytorch, regular_preprocess).augmentate),
+
+            # AugmentedDataset(CHIP()).add_aug(SegmentationAugmentations(is_train, to_pytorch, regular_preprocess).augmentate),
             AugmentedDataset(MHPV2()).add_aug(SegmentationAugmentations(is_train, to_pytorch, regular_preprocess).augmentate),
         ]
     else:

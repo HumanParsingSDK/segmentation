@@ -15,7 +15,7 @@ if __name__ == '__main__':
         original_img = d['data'].copy()
         print(d['target'].max(), d['target'].shape)
         if d['target'].max() > 0:
-            img = vis.process_img(d['data'], (np.expand_dims(d['target'], axis=2) * 255).astype(np.uint8))
+            img = vis.process_img(d['data'], (d['target'] * 255).astype(np.uint8))
         else:
             img = d['data']
 

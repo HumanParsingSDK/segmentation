@@ -60,13 +60,14 @@ class ResNet18SegmentationTrainConfig(MyTrainConfig):
     experiment_dir = os.path.join(MyTrainConfig.experiment_dir, 'resnet18')
 
     @staticmethod
-    def create_model() -> Module:
+    def create_model(pretrained: bool = True) -> Module:
         """
         It is better to init model by separated method
         :return:
         """
         enc = ResNet18(in_channels=3)
-        ModelsWeightsStorage().load(enc, 'imagenet')
+        if pretrained:
+            ModelsWeightsStorage().load(enc, 'imagenet')
         model = UNetDecoder(enc, classes_num=1)
         return ModelWithActivation(model, activation='sigmoid')
 
@@ -75,12 +76,13 @@ class ResNet34SegmentationTrainConfig(MyTrainConfig):
     experiment_dir = os.path.join(MyTrainConfig.experiment_dir, 'resnet34')
 
     @staticmethod
-    def create_model() -> Module:
+    def create_model(pretrained: bool = True) -> Module:
         """
         It is better to init model by separated method
         :return:
         """
         enc = ResNet34(in_channels=3)
-        ModelsWeightsStorage().load(enc, 'imagenet')
+        if pretrained:
+            ModelsWeightsStorage().load(enc, 'imagenet')
         model = UNetDecoder(enc, classes_num=1)
         return ModelWithActivation(model, activation='sigmoid')
